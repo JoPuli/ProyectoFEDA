@@ -1,0 +1,31 @@
+hacer casos modelo e ir probando
+
+nodos
+influyente
+vecinos, camino mas largo o corto
+
+argumentaciones validadas en base
+
+presentaciones tipo jueves
+podemos cerrar notas todo el mes
+
+
+-----
+
+Ordenar ideas
+
+Cómo hacerlo
+Objetivos:
+* Reportar componentes fuertemente conexas
+ - Crear lista de adyacencia de usuarios y seguidores
+ - Aplicar criterio de SCC
+
+* Reportar 10 más influyentes e influenciables según número de seguidores/seguidos
+ - En users está el número de seguidores (número de gente que sigue al usuario)
+ - Al momento de crear la lista de adyacencia, se puede asignar el número de seguidos (número de gente a la que sigue la cuenta)
+
+* Asignar tendencia política. Categorías: izquierda, libertario, derecha, centro
+ - Reportar porcentaje de cercanía a cada tendencia
+ - Definir fórmula propia para calcular porcentaje, debe considerar al menos uno de los anteriores (SCC o Influyentes/Influenciables)
+
+    - 
