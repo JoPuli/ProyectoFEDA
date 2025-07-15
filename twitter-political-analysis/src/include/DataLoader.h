@@ -8,8 +8,8 @@
 class DataLoader {
 public:
     DataLoader(const std::string& userFile, const std::string& connectionFile);
-    std::vector<std::string> loadUserData();
-    std::vector<std::pair<std::string, std::string>> loadConnectionData();
+    std::vector<User> loadUserData();
+    std::vector<Connection> loadConnectionData();
 
 private:
     std::string userFilePath;

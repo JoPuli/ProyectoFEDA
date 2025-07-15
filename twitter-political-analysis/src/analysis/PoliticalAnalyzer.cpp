@@ -1,43 +1,68 @@
 #include "PoliticalAnalyzer.h"
-#include "UserGraph.h"
-#include <unordered_map>
-#include <vector>
-#include <string>
-#include <iostream>
 
-class PoliticalAnalyzer {
-public:
-    PoliticalAnalyzer(UserGraph& userGraph) : userGraph(userGraph) {}
+SCCPoliticalProfile::SCCPoliticalProfile(const std::vector<User>& members)
+    : members(members) {
+    // Initialize topNinfluencers based on members' followers count
+    
+    // Sort descending by follower count
+    std::sort(members.begin(), members.end(),
+              [](const auto& a, const auto& b) { return a.followers_count > b.followers_count; });
 
-    void assignPoliticalTendency(const std::unordered_map<std::string, std::string>& mediaOutlets) {
-        for (const auto& user : userGraph.getUsers()) {
-            std::string tendency = determineTendency(user, mediaOutlets);
-            userTendencies[user] = tendency;
-        }
+    std::vector<std::string> result;
+    for (size_t i = 0; i < members.size() && i < 10; ++i) {
+        result.push_back(members[i].user_name);
     }
+    return result;
+}
 
-    void reportInfluentialUsers(int threshold) {
-        for (const auto& user : userGraph.getUsers()) {
-            int influenceScore = calculateInfluenceScore(user);
-            if (influenceScore > threshold) {
-                std::cout << "Influential User: " << user << " with score: " << influenceScore << std::endl;
+// Assign tendency based on direct newspaper follows
+void SCCPoliticalProfile::assignPureOrMixedTendency(
+    const std::unordered_map<std::string, std::string>& newspaperTendencies,
+    const UserGraph& userGraph,
+    const std::unordered_set<std::string>& newspapers)
+{
+    std::unordered_set<std::string> foundTendencies;
+    for (const auto& user : members) {
+        const auto& following = userGraph.getFollowing(user);
+        for (const auto& newspaper : newspapers) {
+            if (following.count(newspaper)) {
+                foundTendencies.insert(newspaperTendencies.at(newspaper));
             }
         }
     }
-
-private:
-    UserGraph& userGraph;
-    std::unordered_map<std::string, std::string> userTendencies;
-
-    std::string determineTendency(const std::string& user, const std::unordered_map<std::string, std::string>& mediaOutlets) {
-        // Logic to determine political tendency based on followed media outlets
-        // Placeholder implementation
-        return "Neutral"; // Default value
+    if (!foundTendencies.empty()) {
+        double weight = 1.0 / foundTendencies.size();
+        for (const auto& tendency : foundTendencies) {
+            tendencyWeights.weights[tendency] = weight;
+        }
+        tendencyWeights.normalize();
     }
+}
 
-    int calculateInfluenceScore(const std::string& user) {
-        // Logic to calculate influence score based on user connections
-        // Placeholder implementation
-        return 0; // Default value
+// Assign tendency based on top influencers in SCC
+void SCCPoliticalProfile::assignByInfluencers(
+    const std::unordered_map<std::string, SCCPoliticalProfile*>& userToSCC)
+{
+    if (topNInfluencers.empty()) return;
+    std::unordered_map<std::string, double> sumWeights;
+    for (const auto& influencer : topNInfluencers) {
+        auto it = userToSCC.find(influencer);
+        if (it != userToSCC.end()) {
+            const auto& infWeights = it->second->getTendencyWeights().weights;
+            for (const auto& pair : infWeights) {
+                sumWeights[pair.first] += pair.second;
+            }
+        }
     }
-};
+    // Average the weights
+    for (auto& pair : sumWeights) {
+        pair.second /= topNInfluencers.size();
+    }
+    tendencyWeights.weights = sumWeights;
+    tendencyWeights.normalize();
+}
+
+const TendencyWeights& SCCPoliticalProfile::getTendencyWeights() const {
+    return tendencyWeights;
+}
+

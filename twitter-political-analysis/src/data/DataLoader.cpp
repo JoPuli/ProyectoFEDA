@@ -16,7 +16,7 @@ DataLoader::DataLoader(const std::string& userFile, const std::string& connectio
 // userFilePath: ruta del archivo de usuarios
 // Devuelve un vector de estructuras User con los datos de los usuarios
 std::vector<User> DataLoader::loadUserData() {
-    std::vector<User> users;    
+    std::vector<User> users;
     std::ifstream file(userFilePath);
     std::string line;
 
@@ -24,7 +24,7 @@ std::vector<User> DataLoader::loadUserData() {
         std::cerr << "Failed to open user data file: " << userFilePath << std::endl;
         return users;
     }
-
+    std::getline(file, line); // Skip header line
     while (std::getline(file, line)) {
         std::istringstream ss(line);
         User user;
@@ -53,7 +53,7 @@ std::vector<Connection> DataLoader::loadConnectionData() {
         std::cerr << "Failed to open connection data file: " << connectionFilePath << std::endl;
         return connections;
     }
-
+    std::getline(file, line); // Skip header line
     while (std::getline(file, line)) {
         std::istringstream ss(line);
         Connection connection;

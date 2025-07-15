@@ -4,14 +4,11 @@ project(TwitterPoliticalAnalysis)
 
 set(CMAKE_CXX_STANDARD 17)
 
-include_directories(include)
+# Recursively find all .cpp files in the project
+file(GLOB SOURCES "${PROJECT_SOURCE_DIR}/src/*.cpp" 
+    "${PROJECT_SOURCE_DIR}/src/**/*.cpp")
 
-file(GLOB SOURCES
-    "src/*.cpp"
-    "src/data/*.cpp"
-    "src/analysis/*.cpp"
-    "src/algorithms/*.cpp"
-    "src/structures/*.cpp"
-)
+# Add include directory for header files
+include_directories(${PROJECT_SOURCE_DIR}/src/include)
 
 add_executable(TwitterPoliticalAnalysis ${SOURCES})

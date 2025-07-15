@@ -1,0 +1,3 @@
+/home/cat/documentos/uni/feda/proyectos/ProyectoFEDA/twitter-political-analysis/build/CMakeFiles/TwitterPoliticalAnalysis.dir
+/home/cat/documentos/uni/feda/proyectos/ProyectoFEDA/twitter-political-analysis/build/CMakeFiles/edit_cache.dir
+/home/cat/documentos/uni/feda/proyectos/ProyectoFEDA/twitter-political-analysis/build/CMakeFiles/rebuild_cache.dir
